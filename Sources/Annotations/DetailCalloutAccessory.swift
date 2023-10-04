@@ -46,7 +46,12 @@ private struct DetailCalloutAccessory<Annotation: MapAnnotation, Content: View>:
 
         if Content.self != EmptyView.self {
             view.canShowCallout = true
+
             view.detailCalloutAccessoryView = NativeHostingController(rootView: content()).view
+
+            #if canImport(UIKit)
+            view.detailCalloutAccessoryView!.backgroundColor = .clear
+            #endif
         } else {
             view.canShowCallout = false
             view.detailCalloutAccessoryView = nil
