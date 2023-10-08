@@ -27,17 +27,25 @@ class MKMapAnnotationView<Content: View>: MKAnnotationView {
         displayPriority = mapAnnotation.displayPriority
         collisionMode = mapAnnotation.collisionMode
 
-        let controller = NativeHostingController(rootView: mapAnnotation.content)
-        self.controller = controller
+        // Optimize the MKAnnotationView when our ViewMapAnnotation content
+        // body is just a single Image. We can only do this on platforms that
+        // have `ImageRenderer` available.
+        if #available(iOS 16, macOS 13, *), let imageOnlyView = mapAnnotation.content as? any ImageOnlyView {
+            image = imageOnlyView.image
+        } else {
+            // The annotation is more complex; add it as a subview instead.
+            let controller = NativeHostingController(rootView: mapAnnotation.content)
+            self.controller = controller
 
-        frame.size = controller.view.intrinsicContentSize
-        addSubview(controller.view)
-        controller.view.frame = bounds
+            frame.size = controller.view.intrinsicContentSize
+            addSubview(controller.view)
+            controller.view.frame = bounds
 
-        #if canImport(UIKit)
-        controller.view.backgroundColor = .clear
-        #endif
-        
+            #if canImport(UIKit)
+                controller.view.backgroundColor = .clear
+            #endif
+        }
+
         #if canImport(UIKit)
         if #available(iOS 16, *) {
             anchorPoint = mapAnnotation.anchorPoint.toCGPoint()
@@ -84,7 +92,8 @@ class MKMapAnnotationView<Content: View>: MKAnnotationView {
         controller?.view.removeFromSuperview()
         controller?.removeFromParent()
         controller = nil
-        
+
+        image = nil
         mapAnnotation = nil
         annotation = nil
     }
