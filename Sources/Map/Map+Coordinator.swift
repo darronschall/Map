@@ -324,6 +324,16 @@ extension Map {
             MKClusterAnnotation(memberAnnotations: memberAnnotations)
         }
 
+        public func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+            guard let userView = mapView.view(for: mapView.userLocation) else {
+                return
+            }
+            #if canImport(UIKit)
+            userView.isUserInteractionEnabled = false
+            #endif
+            userView.isEnabled = false
+            userView.canShowCallout = false
+        }
     }
 
     // MARK: Methods
