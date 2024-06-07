@@ -11,7 +11,7 @@ import MapKit
 import SwiftUI
 
 public struct Map<AnnotationItems: RandomAccessCollection, OverlayItems: RandomAccessCollection>
-    where AnnotationItems.Element: Identifiable, OverlayItems.Element: Identifiable {
+    where AnnotationItems.Element: Identifiable & Equatable, OverlayItems.Element: Identifiable {
 
     // MARK: Stored Properties
 

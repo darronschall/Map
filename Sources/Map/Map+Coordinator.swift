@@ -76,9 +76,9 @@ extension Map {
         private func updateAnnotations(on mapView: MKMapView, from previousView: Map?, to newView: Map) {
             let changes: CollectionDifference<AnnotationItems.Element>
             if let previousView = previousView {
-                changes = newView.annotationItems.difference(from: previousView.annotationItems) { $0.id == $1.id }
+                changes = newView.annotationItems.difference(from: previousView.annotationItems) { $0 == $1 }
             } else {
-                changes = newView.annotationItems.difference(from: []) { $0.id == $1.id }
+                changes = newView.annotationItems.difference(from: []) { $0 == $1 }
             }
 
             for change in changes {
